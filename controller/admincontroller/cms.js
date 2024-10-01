@@ -100,7 +100,7 @@ module.exports = {
       console.log(error, 'error');
       return res.status(500).json('Internal server error');
     }
-  },
+  }, 
   termupdate: async (req, res) => {
     try {
       const { content } = req.body;

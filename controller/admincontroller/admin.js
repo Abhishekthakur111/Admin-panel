@@ -123,7 +123,7 @@ module.exports = {
             let updateData = { ...req.body }; 
             if (req.files && req.files.image) {
                 let folder = "admin";
-                let imagePath = await helper.fileUpload(req.files.image, folder);
+                 let imagePath = await helper.fileUpload(req.files.image, folder);
                 updateData.image = imagePath; 
             };           
             await user.findByIdAndUpdate(req.session.admin._id, updateData, { new: true }); 
