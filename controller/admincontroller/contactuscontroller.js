@@ -1,16 +1,7 @@
 const contactus = require('../../models/contactus');
 
 module.exports = {
-    createcontact:async(req,res)=>{
-        try {
-            const data = await contactus.create({
-                ...req.body
-            });
-            res.status(200).json(data);
-        } catch (error) {
-            console.log(error,'error');
-        }
-    },
+    
     contact:async(req,res)=>{
         try {
             if(!req.session.admin) return res.redirect('/login');
@@ -31,7 +22,7 @@ module.exports = {
             res.render('contact/contactview',{
                 session:req.session.admin,
                 data,
-                title:"Details"
+                title:"Contact Detail"
             })
 
         } catch (error) {

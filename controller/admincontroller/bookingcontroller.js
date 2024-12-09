@@ -5,50 +5,6 @@ const User = require('../../models/user');
 const Services = require('../../models/servicelist');  
 
 module.exports = {
-    createBooking: async (req, res) => {
-        try {
-            const validator = new Validator(req.body, {
-                user_id: 'required|string',
-                service_id: 'required|string',
-              
-            });
-
-            const isValid = await validator.check();
-            if (!isValid) {
-                return helper.error(res, 'Invalid data', validator.errors);
-            }
-
-            const userId = req.body.user_id.trim();
-            const serviceId = req.body.service_id.trim();
-
-            
-            const userExists = await User.exists({ _id: userId });
-            const serviceExists = await Services.exists({ _id: serviceId });
-
-            if (!userExists) {
-                return helper.error(res, 'User not found');
-            }
-            
-            if (!serviceExists) {
-                return helper.error(res, 'Service not found');
-            }
-            const newBooking = await Booking.create({
-                user_id: userId,
-                service_id: serviceId,
-                amount: req.body.amount,
-                no_of_booking: req.body.no_of_booking || 1,  
-                description: req.body.description || '', 
-                location: req.body.location,
-                booking_code: req.body.booking_code,  
-            });
-
-            return helper.success(res, 'Booking Created Successfully', { data: newBooking });
-
-        } catch (error) {
-            console.error('Error creating booking:', error);
-            return helper.error(res, 'Internal server error');
-        }
-    },
     bookinglist:async(req,res)=>{
         try {
             if(!req.session.admin) return res.redirect('/login');
@@ -77,7 +33,7 @@ module.exports = {
 
       res.render('booking/bookingview.ejs',{
         session:req.session.admin,
-        title:'Details',
+        title:'Booking Detail',
         data
       })
     } catch (error) {

@@ -40,8 +40,6 @@ module.exports = {
           const service = await servicelist.find({})
           .populate('cat_id')
           .exec();
-          console.log(service,'///////////////////////');
-
           res.render("service/servicelist", {
             title: "Services",
             service,
@@ -105,7 +103,7 @@ module.exports = {
             .exec();
         
           res.render("service/serviceview", {
-            title: "Details",
+            title: "Service Detail",
             data,
             session: req.session.admin,
           });
@@ -118,7 +116,7 @@ module.exports = {
         try {
             if (!req.session.admin) return res.redirect("/login");
 
-            const data = await category.find({raw:true});
+            const data = await category.find({status: 1});
             res.render('service/serviceadd',{
               session:req.session.admin,
               title:"Add Service",

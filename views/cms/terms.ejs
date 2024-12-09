@@ -1,7 +1,23 @@
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
 
-<%- include('../common/header.ejs'); %>
+<head>
+        
+    <%- include('../common/header.ejs'); %>
+    <style>
+        /* Ensure fullscreen covers the entire viewport */
+        .note-editor.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050;
+            background: #fff;
+            overflow: auto;
+        }
+    </style>
+</head>
 
 <body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
 
@@ -48,7 +64,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-12 d-flex flex-sm-row flex-column mt-2">
+                                        <div class="col-12 d-flex justify-content-end mt-2">
                                             <button type="submit" class="btn btn-primary mb-1 mb-sm-0 me-0 me-sm-1 waves-effect waves-float waves-light">Update</button>
                                             
                                         </div>

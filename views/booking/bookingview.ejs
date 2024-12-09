@@ -30,19 +30,18 @@
                             <div class="card-body ">
                                 <form class="auth-register-form " action="" method="POST">
                                     <div class="mb-1">
-                                        <label for="first_name" class="form-label">User </label>
+                                        <label for="first_name" class="form-label">User</label>
                                         <input type="text" class="form-control" id="name"
-                                            name="name" readonly value="<%= data.user_id.name %>"
-                                            aria-describedby="first_name" tabindex="1" autofocus />
-                                    </div>
-                                               
+                                               name="name" readonly
+                                               value="<%= data.user_id ? data.user_id.name : 'No' %>"
+                                               aria-describedby="first_name" tabindex="1" autofocus />
+                                      </div>          
                                     <div class="mb-1">
                                         <label for="first_name" class="form-label">Service</label>
                                         <input type="text" class="form-control" id="name"
-                                            name="name" readonly value="<%= data.service_id.name %>"
+                                            name="name" readonly value="<%= data.service_id.name ? data.service_id.name : "No Service" %>"
                                             aria-describedby="first_name" tabindex="1" autofocus />
                                     </div>
-                                    
                                     <div class="mb-1">
                                         <label for="first_name" class="form-label">No_of_booking</label>
                                         <input type="text" class="form-control" id="no_of_booking"
@@ -55,7 +54,6 @@
                                             name="price" readonly value="$<%= data.amount%>"
                                             aria-describedby="first_name" tabindex="1" autofocus />
                                     </div>
-
                                     <div class="mb-1">
                                         <label for="first_name" class="form-label">Discription</label>
                                         <input type="text" class="form-control" id="description"
@@ -68,8 +66,9 @@
                                             name="location" readonly value="<%= data.location%>"
                                             aria-describedby="first_name" tabindex="1" autofocus />
                                     </div>
-
-                                    <button class="btn btn-primary" tabindex="6" onclick="window.history.back();">Back</button>
+                                    <div class="d-flex justify-content-end">
+                                        <a class="btn btn-primary" tabindex="6" href="/bookinglist">Back</a>
+                                    </div>
                                 </form>
                             </div>
                         </div>

@@ -33,46 +33,70 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="nav-item" id="nav-dashboard">
-                <a class="d-flex align-items-center" href="/dashboard"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboard</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a>
+            <li class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/dashboard">
+                    <i data-feather="home"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Dashboard</span>
+                </a>
             </li>
-             <li class="nav-item" id="nav-userlist">
-                <a class="d-flex align-items-center" href="/userlist"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="Userlist">Users</span></a>
+            <li class="nav-item <%= title === 'Users' || title === 'User Detail' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/userlist">
+                    <i data-feather="users"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Users</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-userlist">
-                <a class="d-flex align-items-center" href="/provider"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="Userlist">Providers</span></a>
+            <li class="nav-item <%= title === 'Categories' || title === 'Category Detail' || title === 'Add Category' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/categorylist">
+                    <i data-feather="grid"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Categories</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-userlist">
-                <a class="d-flex align-items-center" href="/worker"><i data-feather="briefcase"></i><span class="menu-title text-truncate" data-i18n="Userlist">Worker</span></a>
+            <li class="nav-item <%= title === 'Services' || title === 'Service Detail' || title === 'Add Service' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/servicelist">
+                    <i data-feather="package"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Services</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-userlist">
-                <a class="d-flex align-items-center" href="/categorylist"><i data-feather="grid"></i><span class="menu-title text-truncate" data-i18n="Userlist">Categories</span></a>
+            <li class="nav-item <%= title === 'Bookings' || title === 'Booking Detail' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/bookinglist">
+                    <i data-feather="book"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Booking</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-term">
-                <a class="d-flex align-items-center" href="/servicelist"><i data-feather="package"></i><span class="menu-title text-truncate" data-i18n="TermsConditions">Services</span></a>
-            </li>  
-            <li class="nav-item" id="nav-term">
-                <a class="d-flex align-items-center" href="/bookinglist"><i data-feather="book"></i><span class="menu-title text-truncate" data-i18n="TermsConditions">Bookings</span></a>
-            </li>  
-           
-            <li class="nav-item" id="nav-privacy">
-                <a class="d-flex align-items-center" href="/privacy"><i data-feather="lock"></i><span class="menu-title text-truncate" data-i18n="Privacy">Privacy Policy</span></a>
+            <li class="nav-item <%= title === 'Map' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/map">
+                    <i data-feather="map-pin"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Map</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-aboutus">
-                <a class="d-flex align-items-center" href="/aboutus"><i data-feather="info"></i><span class="menu-title text-truncate" data-i18n="AboutUs">About Us</span></a>
+            <li class="nav-item <%= title === 'Privacy Policy' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/privacy">
+                    <i data-feather="lock"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Privacy Policy</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-term">
-                <a class="d-flex align-items-center" href="/term"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="TermsConditions">Terms & Conditions</span></a>
-            </li>  
-            <li class="nav-item" id="nav-term">
-                <a class="d-flex align-items-center" href="/getcontact"><i data-feather="phone"></i><span class="menu-title text-truncate" data-i18n="TermsConditions">Contact Us</span></a>
+            <li class="nav-item <%= title === 'About Us' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/aboutus">
+                    <i data-feather="info"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">About Us</span>
+                </a>
             </li>
-            <li class="nav-item" id="nav-term">
-                <a class="d-flex align-items-center" href="/map"><i data-feather="map-pin"></i><span class="menu-title text-truncate" data-i18n="TermsConditions">Map</span></a>
-            </li>   
+            <li class="nav-item <%= title === 'Terms&Conditions' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/term">
+                    <i data-feather="file-text"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Terms&Conditions</span>
+                </a>
+            </li>
+            <li class="nav-item <%= title === 'Contact Us' || title === 'Contact Detail' ? 'active' : '' %>">
+                <a class="d-flex align-items-center" href="/getcontact">
+                    <i data-feather="phone"></i>
+                    <span class="menu-title text-truncate" data-i18n="user">Contact Us</span>
+                </a>
+            </li>
+              
         </ul>
     </div>
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
 
@@ -85,7 +109,7 @@
             item.classList.remove('active');
         }
     });
-});
+}); -->
 
 </script>    
     

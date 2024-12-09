@@ -2,18 +2,6 @@
 const cms = require('../../models/cms');
 
 module.exports = {
-
-  create: async (req, res) => {
-    try {
-      const data = await cms.create({
-        ...req.body
-      });
-      res.status(200).json(data);
-    } catch (error) {
-      console.log(error, 'error');
-      return res.status(500).json('Internal server error');
-    }
-  },
   privacy: async (req, res) => {
     try {
       if (!req.session.admin) return res.redirect('/login');
@@ -94,7 +82,7 @@ module.exports = {
       res.render('cms/terms', {
         session: req.session.admin,
         data,
-        title: "Terms & Conditions",
+        title: "Terms&Conditions",
       });
     } catch (error) {
       console.log(error, 'error');

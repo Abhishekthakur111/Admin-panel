@@ -28,20 +28,15 @@
                         <!-- Statistics Card -->
                         <div class="col-12">
                             <div class="card card-statistics">
-                                <div class="card-header">
-                                    <h4 class="card-title">Statistics</h4>
-                                    <div class="d-flex align-items-center">
-                                        <p class="card-text font-small-2 me-25 mb-0">Updated     <%= updatedTimeText %></p>
-                                    </div>   
-                                </div>
+                               
                                 <div class="card-body statistics-body">
                                     <div class="row">
                                         <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-                                            <a href="/userlist">
+                                            <a class="card_custom" href="/userlist">
                                                 <div class="d-flex flex-row">
                                                     <div class="avatar bg-light-primary me-2">
                                                         <div class="avatar-content">
-                                                            <i data-feather="user" class="avatar-icon"></i>
+                                                            <i data-feather="users" class="avatar-icon"></i>
                                                         </div>
                                                     </div>
                                                     <div class="my-auto">
@@ -52,22 +47,22 @@
                                             </a>
                                         </div>
                                         <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-                                            <a href="/provider">
+                                            <a class="card_custom" href="/categorylist">
                                                 <div class="d-flex flex-row">
                                                     <div class="avatar bg-light-info me-2">
                                                         <div class="avatar-content">
-                                                            <i data-feather="trending-up" class="avatar-icon"></i>
+                                                            <i data-feather="grid" class="avatar-icon"></i>
                                                         </div>
                                                     </div>
                                                     <div class="my-auto">
                                                         <h4 class="fw-bolder mb-0"><%= provider %></h4>
-                                                        <h2 class="card-text font-small-3 mb-0">Provider</h2>
+                                                        <h2 class="card-text font-small-3 mb-0">Categories</h2>
                                                     </div>
                                                 </div>
                                             </a>
                                         </div>
                                         <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
-                                            <a href="/worker">
+                                            <a class="card_custom" href="/servicelist">
                                                 <div class="d-flex flex-row">
                                                     <div class="avatar bg-light-danger me-2">
                                                         <div class="avatar-content">
@@ -76,13 +71,31 @@
                                                     </div>
                                                     <div class="my-auto">
                                                         <h4 class="fw-bolder mb-0"><%= worker %></h4>
-                                                        <h2 class="card-text font-small-3 mb-0">Workers</h2>
+                                                        <h2 class="card-text font-small-3 mb-0">Services</h2>
                                                     </div>
                                                 </div>
                                             </a>
                                         </div>
                                         <div class="col-xl-3 col-sm-6 col-12">
-                                            <a href="/map">
+                                            <a class="card_custom" href="/bookinglist">
+                                                <div class="d-flex flex-row">
+                                                    <div class="avatar bg-light-danger me-2">
+                                                        <div class="avatar-content">
+                                                            <i data-feather="book" class="avatar-icon"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-auto">
+                                                        <h4 class="fw-bolder mb-0"><%=booking%></h4>
+                                                        <h2 class="card-text font-small-3 mb-0">Booking</h2>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0 mt-2">
+                                            <a class="card_custom" href="/map">
                                                 <div class="d-flex flex-row">
                                                     <div class="avatar bg-light-success me-2">
                                                         <div class="avatar-content">

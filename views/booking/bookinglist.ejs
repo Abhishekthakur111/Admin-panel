@@ -65,16 +65,14 @@
                                     <tr data-id="<%= item.id %>">
                                         <td><%= i + 1 %></td>
                                         <td>
-                                            <%=item.user_id.name%>
-                                            </td>
-
-                                   <td>
-                                    <%=item.service_id.name%>
-                                    </td>
-                                     
-                                        <td>$<%= item.amount%></td>
-                                        <td><%= item.description %></td>
-                                        <td><%= item.location %></td>
+                                            <%= item.user_id ? item.user_id.name : 'No User' %>
+                                        </td>
+                                        <td>
+                                            <%= item.service_id ? item.service_id.name : 'No User' %>
+                                        </td>
+                                        <td>$<%= item.amount ? item.amount : 'No Amount'%></td>
+                                        <td><%= item.description ? item.description : " No Description" %></td>
+                                        <td><%= item.location ? item.location : "No Location" %></td>
                                         <td>
                                             <% if (item.status == 0) { %>
                                                 <a data-id="<%= item.id %>" data-status="0" class="btn btn-info status-toggle">Inactive</a>

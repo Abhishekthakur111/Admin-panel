@@ -48,7 +48,7 @@ module.exports = {
            res.render('category/categoryview.ejs',{
             session:req.session.admin,
             data,
-            title:'Details'
+            title:'Category Detail'
            });
         } catch (error) {
             console.log(error,'error  view category');

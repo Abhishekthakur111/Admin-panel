@@ -1,6 +1,9 @@
 const user = require("../../models/user");
 const bcrypt = require('bcrypt');
 const helper = require('../../helper/helper');
+const Category = require('../../models/category');
+const Service = require('../../models/servicelist');
+const Booking = require('../../models/booking');
 
 module.exports = {
     dashboard: async (req, res) => {
@@ -8,8 +11,9 @@ module.exports = {
             if (!req.session.admin) return res.redirect('/login');
     
             const data = await user.countDocuments({ role: '1' });
-            const provider = await user.countDocuments({ role: '2' });
-            const worker = await user.countDocuments({ role: '3' });
+            const provider = await Category.countDocuments({});
+            const worker = await Service.countDocuments({});
+            const booking = await Booking.countDocuments({});
             const usersByMonth = await user.aggregate([
                 { $match: { role: '1' } },
                 {
@@ -24,30 +28,7 @@ module.exports = {
             usersByMonth.forEach(item => {
                 chartData[item._id - 1] = item.count;
             });
-            const latestUser = await user.findOne({ role: '1' }).sort({ updatedAt: -1 });
-            const calculateTimeDifference = (updatedAt) => {
-                const now = new Date();
-                const updatedTime = new Date(updatedAt);
-                const diffMs = now - updatedTime;
-    
-                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                const diffMonths = Math.floor(diffDays / 30); 
-    
-                if (diffMonths > 0) {
-                    return `${diffMonths} month(s) ago`;
-                } else if (diffDays > 0) {
-                    return `${diffDays} day(s) ago`;
-                } else if (diffHours > 0) {
-                    return `${diffHours} hour(s) ago`;
-                } else if (diffMinutes > 0) {
-                    return `${diffMinutes} minute(s) ago`;
-                } else {
-                    return 'Just now';
-                }
-            };    
-            const updatedTimeText = latestUser ? calculateTimeDifference(latestUser.updatedAt) : 'No updates available'
+           
             res.render('dashboard', {
                 session: req.session.admin,
                 title: 'Dashboard',
@@ -55,7 +36,8 @@ module.exports = {
                 provider,
                 worker,
                 chartData,
-                updatedTimeText 
+                booking
+                
             });
         } catch (error) {
             console.error(error, 'Error in dashboard');
@@ -75,22 +57,24 @@ module.exports = {
             const {  password } = req.body;
 
             const find_user = await user.findOne({ email: req.body.email, role:'0'
-               
              });
             if (!find_user) {
-                req.flash("error", "  Error in login  ");
+                req.flash("error", "");
             }
             const storedHash = find_user.password;
             const is_password = await bcrypt.compare(password, storedHash);
+            if (!is_password) {
+                req.flash("error", "Password is invalid");
+                return res.redirect('/login');
+            }
             if (is_password) {
                 if (find_user.role == 0) {
                     req.session.admin = find_user;
-                
                     req.flash("success", " login succesfully ");
                     return res.redirect('/dashboard');
                     
                 } else {
-                    req.flash("error", "Access denied");
+                    req.flash("error", "invalid crentials");
                     return res.redirect('/login'); 
                 }
 
@@ -98,8 +82,8 @@ module.exports = {
         }
         catch (error) {
             console.error('Error during login:', error);
-
-            return res.status(500).json({ message: "Internal server error" });
+            req.flash("error", "Email is Invalid");
+            return res.redirect('/login'); 
         }
     },
     profile: async (req, res) => {
@@ -233,20 +217,36 @@ module.exports = {
     view: async (req, res) => {
         try {
             if (!req.session.admin) return res.redirect("/login");
-
-            const userId = req.params._id; 
+    
+            const userId = req.params._id;
             if (!userId) {
                 return res.status(400).json({ message: "User ID is required" });
             }
             const userDoc = await user.findOne({ _id: userId, role: [ '1', '2', '3'] });
-            if (!userDoc) {
-                return res.status(404).json({ message: "User not found or does not have the required role" });
+            let title = '';
+            if (userDoc) {
+                switch (userDoc.role) {
+                    case '1':
+                        title = 'User Detail';
+                        break;
+                    case '2':
+                        title = 'Provider Detail';
+                        break;
+                    case '3':
+                        title = 'Worker Detail';
+                        break;
+                    default:
+                        title = 'User Details';
+                        break;
+                }
+            } else {
+                return res.status(404).json({ message: "User not found" });
             }
-            
+    
             res.render("admin/view.ejs", {
                 session: req.session.admin,
                 view: userDoc,
-                title:'Details'
+                title: title
             });
         } catch (error) {
             console.error("Error fetching user view:", error);
@@ -271,40 +271,6 @@ module.exports = {
             res.status(500).json({ success: false, message: "Internal server error" });
         }
     },     
-    provider:async(req,res)=>{
-        try {
-            if(!req.session.admin) return res.redirect('/login');
-            const data = await user.find({
-                role: '2',
-                raw: true,
-            });
-            res.render('admin/provider',{
-                session:req.session.admin,
-                data,
-                title:'Providers',
-            })
-        } catch (error) {
-            console.error("Error ", error);
-            res.status(500).json({ success: false, message: "Internal server error" });
-        }
-    },
-    worker:async(req,res)=>{
-        try {
-            if(!req.session.admin) return res.redirect('/login');
-            const data = await user.find({
-                role: '3',
-                raw: true,
-            });
-            res.render('admin/worker',{
-                data,
-                session:req.session.admin,
-                title: 'Workers'
-            })
-        } catch (error) {
-            console.error("Error ", error);
-            res.status(500).json({ success: false, message: "Internal server error" });
-        }
-    },
     map:async(req,res)=>{
         try {
             if(!req.session.admin) return res.redirect('/login');

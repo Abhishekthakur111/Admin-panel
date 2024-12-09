@@ -42,9 +42,11 @@
                                     <div class="mb-1">
                                         <label for="first_name" class="form-label">Category Name</label>
                                         <input type="text" class="form-control" id="name"
-                                            name="name" readonly value="<%= data.cat_id.category_name%>"
+                                            name="name" readonly 
+                                            value="<%= data.cat_id && data.cat_id.category_name ? data.cat_id.category_name : 'No Category' %>"
                                             aria-describedby="first_name" tabindex="1" autofocus />
                                     </div>
+                                    
                                     <div class="mb-1">
                                         <label for="first_name" class="form-label">Name</label>
                                         <input type="text" class="form-control" id="name"
@@ -57,8 +59,9 @@
                                             name="price" readonly value="$<%= data.price %>"
                                             aria-describedby="first_name" tabindex="1" autofocus />
                                     </div>
-
+                                  <div class="d-flex justify-content-end">
                                     <a href="/servicelist" class="btn btn-primary " tabindex="6">Back</a>
+                                  </div>
                                 </form>
                             </div>
                         </div>
