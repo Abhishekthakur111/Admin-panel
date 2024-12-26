@@ -36,7 +36,7 @@ module.exports = {
     },
     getservice:async(req,res)=>{
         try {
-         if (!req.session.admin) return res.redirect("/login");
+         
           const service = await servicelist.find({})
           .populate('cat_id')
           .exec();
@@ -55,14 +55,7 @@ module.exports = {
     service_status: async (req, res) => {
         try {
             const { _id } = req.body;
-            if (!_id) {
-                return res.status(400).json({ success: false, message: "Missing _id" });
-            }
             const userDoc = await servicelist.findById(_id);
-            if (!userDoc) {
-                return res.status(404).json({ success: false, message: " not found" });
-            }
-        
             const updatedUser = await servicelist.findByIdAndUpdate(
                 _id,
                 { $set: { status: req.body.status } },
@@ -79,15 +72,8 @@ module.exports = {
     service_delete: async (req, res) => {
         try {
             const catId = req.params._id;
-            if (!catId) {
-                return res.status(400).json({ success: false, message: " ID is required" });
-            }
             const catDoc = await servicelist.findById(catId);
-            if (!catDoc) {
-                return res.status(404).json({ success: false, message: " not found" });
-            }
             await servicelist.findByIdAndDelete(catId);
-    
             res.json({ success: true, message: " deleted successfully" });
         } catch (error) {
             console.error("Error deleting cat:", error);
@@ -97,7 +83,6 @@ module.exports = {
     serviceview: async(req,res)=>{
         try {
           const data = await servicelist.findOne(
-
             {_id:req.params._id})
             .populate('cat_id')
             .exec();
@@ -114,8 +99,6 @@ module.exports = {
     },
     serviceadd:async(req,res) => {
         try {
-            if (!req.session.admin) return res.redirect("/login");
-
             const data = await category.find({status: 1});
             res.render('service/serviceadd',{
               session:req.session.admin,
@@ -123,8 +106,7 @@ module.exports = {
               data
             });
           } catch (error) {
-            console.error("Error view", error);
-            res.status(500).json({ success: false, message: "Internal server error" });
+            throw error;
           }
     }
 }

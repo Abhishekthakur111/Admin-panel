@@ -6,8 +6,6 @@ const category = require('../../models/category');
 module.exports = {
     createcategory:async(req,res)=>{
         try {
-           
-
         if (req.files && req.files.image) {
             const imagePath = await helper.fileUpload(req.files.image);
             req.body.image = imagePath;
@@ -17,9 +15,7 @@ module.exports = {
             image: req.body.image,
         });
         req.flash("success"," Category add successfully");
-        res.redirect('/categorylist');
-
-       
+        res.redirect('/categorylist');       
         } catch (error) {
             console.log(error,'error creating category');
             res.status(500).json({success:'false', message:'error creatng category'});
@@ -27,7 +23,6 @@ module.exports = {
     },
     categorylist:async(req,res)=>{
         try {
-            if(!req.session.admin) return res.redirect('/login');
             const data = await category.find({});
             res.render('category/categorylist',{
                 data,
@@ -41,7 +36,6 @@ module.exports = {
     },
     categoryview:async(req,res)=>{
         try {
-           if(!req.session.admin) return res.redirect('/login');
            const data = await category.findOne({
             _id:req.params._id,
            });
@@ -58,14 +52,7 @@ module.exports = {
     cat_status: async (req, res) => {
         try {
             const { _id } = req.body;
-            if (!_id) {
-                return res.status(400).json({ success: false, message: "Missing _id" });
-            }
             const userDoc = await category.findById(_id);
-            if (!userDoc) {
-                return res.status(404).json({ success: false, message: " not found" });
-            }
-        
             const updatedUser = await category.findByIdAndUpdate(
                 _id,
                 { $set: { status: req.body.status } },
@@ -82,15 +69,8 @@ module.exports = {
     cat_delete: async (req, res) => {
         try {
             const catId = req.params._id;
-            if (!catId) {
-                return res.status(400).json({ success: false, message: " ID is required" });
-            }
             const catDoc = await category.findById(catId);
-            if (!catDoc) {
-                return res.status(404).json({ success: false, message: " not found" });
-            }
             await category.findByIdAndDelete(catId);
-    
             res.json({ success: true, message: " deleted successfully" });
         } catch (error) {
             console.error("Error deleting cat:", error);

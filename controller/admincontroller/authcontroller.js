@@ -8,8 +8,6 @@ const Booking = require('../../models/booking');
 module.exports = {
     dashboard: async (req, res) => {
         try {
-            if (!req.session.admin) return res.redirect('/login');
-    
             const data = await user.countDocuments({ role: '1' });
             const provider = await Category.countDocuments({});
             const worker = await Service.countDocuments({});
@@ -90,20 +88,18 @@ module.exports = {
         try {
           const userId = req.session.admin._id;
           const profile = await user.findById(userId).select('name email phone_no image address'); 
-    
          res.render('admin/profile.ejs',{
             session:req.session.admin,
             profile,
             title:'profile',
          })
         } catch (error) {
-          console.error("Error fetching profile:", error);
-          return res.status(500).json({ message: "An error occurred while fetching profile" });
+            res.redirect('back');
+            return helper.error(res, "Error fetching profile.", { error: error.message });
         }
     },
     edit_profile: async (req, res) => {
         try {
-            if (!req.session.admin) return res.redirect("/login");
             let updateData = { ...req.body }; 
             if (req.files && req.files.image) {
                 let folder = "admin";
@@ -113,7 +109,6 @@ module.exports = {
             await user.findByIdAndUpdate(req.session.admin._id, updateData, { new: true }); 
             const updatedUser = await user.findById(req.session.admin._id);
             req.session.admin = updatedUser;
-    
             req.flash("success", "Profile updated successfully");
             res.redirect("/profile");
         } catch (error) {
@@ -122,8 +117,7 @@ module.exports = {
         }
     },
     password: async(req,res)=>{
-        try {
-            if (!req.session.admin) return res.redirect("/login");
+        try {   
             res.render('admin/password.ejs',{
                 session: req.session.admin,
                 title: "Change Password",
@@ -134,48 +128,47 @@ module.exports = {
         }
     }, 
     updatepassword: async (req, res) => {
-            const { oldPassword, newPassword, confirmPassword } = req.body;
-    
-            try {
-                if (!req.session.admin) return res.redirect("/login");
-    
-               
-                if (!oldPassword || !newPassword || !confirmPassword) {
-                    return res.status(400).json({ message: 'All fields are required' });
-                }
-                if (newPassword !== confirmPassword) {
-                    return res.status(400).json({ message: 'New password and confirm password do not match' });
-                }
-                const currentUser = await user.findById(req.session.admin._id);
-                if (!currentUser) {
-                    return res.status(404).json({ message: 'User not found' });
-                }
-                const isMatch = await bcrypt.compare(oldPassword, currentUser.password);
-                if (!isMatch) {
-                    return res.status(400).json({ message: 'Old password is incorrect' });
-                }
-                const hashedPassword = await bcrypt.hash(newPassword, 10);
-                currentUser.password = hashedPassword;
-                await currentUser.save();
-                req.session.admin.password = hashedPassword;
-                req.flash("success", "Password updated successfully");
-                res.redirect('/login');
-            } catch (error) {
-                console.error('Error updating password:', error);
-                res.status(500).json({ message: 'Internal server error' });
+        const { oldPassword, newPassword, confirmPassword } = req.body;
+        try {
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                req.flash("error", "All fields are required");
+                return res.redirect("back");
             }
-    },
+            if (newPassword !== confirmPassword) {
+                req.flash("error", "New password and confirm password do not match");
+                return res.redirect("back");
+            }
+            const currentUser = await user.findById(req.session.admin._id);
+            if (!currentUser) {
+                req.flash("error", "User not found");
+                return res.redirect("back");
+            }
+            const isMatch = await bcrypt.compare(oldPassword, currentUser.password);
+            if (!isMatch) {
+                req.flash("error", "Old password is incorrect");
+                return res.redirect("back");
+            }
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            currentUser.password = hashedPassword;
+            await currentUser.save();
+            req.session.admin.password = hashedPassword;
+            req.flash("success", "Password updated successfully");
+            return res.redirect('/login');
+        } catch (error) {
+            req.flash("error", "Internal server error");
+            return res.redirect("back");
+        }
+    }, 
     logout:async(req,res)=>{
             try {
-                req.session.destroy();
+                delete  req.session.admin 
                 res.redirect('/login')
             } catch (error) {
                 return helper.error(res, error);
             }
     },
     user_list: async (req, res) => {  
-            try {
-              if (!req.session.admin) return res.redirect("/login");
+            try { 
               const data = await user.find({
                   role: "1",
                 raw: true,
@@ -186,21 +179,14 @@ module.exports = {
                 session: req.session.admin,
               });
             } catch (error) {
-              console.error("Error fetching user list:", error);
-              res.status(500).json({ message: "Internal server error" });
+                req.flash('error', `Error fetching userlist: ${error.message}`);
+                res.redirect('back');
             }
     },
     user_status: async (req, res) => {
             try {
                 const { _id } = req.body;
-                if (!_id) {
-                    return res.status(400).json({ success: false, message: "Missing _id" });
-                }
                 const userDoc = await user.findById(_id);
-                if (!userDoc) {
-                    return res.status(404).json({ success: false, message: "User not found" });
-                }
-               
                 const updatedUser = await user.findByIdAndUpdate(
                     _id,
                     { $set: { status: req.body.status} },
@@ -210,39 +196,14 @@ module.exports = {
                     success: true, 
                     data: updatedUser });
             } catch (error) {
-                console.error("Error updating status:", error);
-                res.status(500).json({ success: false, message: "Internal server error" });
+                req.flash('error', `Error updating status: ${error.message}`);
+                res.redirect('back');
             }
     },    
     view: async (req, res) => {
         try {
-            if (!req.session.admin) return res.redirect("/login");
-    
             const userId = req.params._id;
-            if (!userId) {
-                return res.status(400).json({ message: "User ID is required" });
-            }
-            const userDoc = await user.findOne({ _id: userId, role: [ '1', '2', '3'] });
-            let title = '';
-            if (userDoc) {
-                switch (userDoc.role) {
-                    case '1':
-                        title = 'User Detail';
-                        break;
-                    case '2':
-                        title = 'Provider Detail';
-                        break;
-                    case '3':
-                        title = 'Worker Detail';
-                        break;
-                    default:
-                        title = 'User Details';
-                        break;
-                }
-            } else {
-                return res.status(404).json({ message: "User not found" });
-            }
-    
+            const userDoc = await user.findOne({ _id: userId, role: [ '1'] });
             res.render("admin/view.ejs", {
                 session: req.session.admin,
                 view: userDoc,
@@ -256,15 +217,8 @@ module.exports = {
     user_delete: async (req, res) => {
         try {
             const userId = req.params._id;
-            if (!userId) {
-                return res.status(400).json({ success: false, message: "User ID is required" });
-            }
             const userDoc = await user.findById(userId);
-            if (!userDoc) {
-                return res.status(404).json({ success: false, message: "User not found" });
-            }
             await user.findByIdAndDelete(userId);
-    
             res.json({ success: true, message: "User deleted successfully" });
         } catch (error) {
             console.error("Error deleting user:", error);
@@ -273,7 +227,6 @@ module.exports = {
     },     
     map:async(req,res)=>{
         try {
-            if(!req.session.admin) return res.redirect('/login');
             res.render('map/leafmap',{
                 session:req.session.admin,
                 title:"Map"

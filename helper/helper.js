@@ -69,5 +69,14 @@ module.exports = {
             return Object.values(errors).map(e => e.message)[0] || '';
         }
         return '';
+    },
+    checkAdminSession :async (req, res, next) => {
+    if (req.originalUrl === '/login' || req.originalUrl === '/loginpost') {
+        return next();
     }
+    if (!req.session.admin) {
+        return res.redirect('/login');
+    }
+    next();
+    },
 };
