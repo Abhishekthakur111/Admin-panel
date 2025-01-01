@@ -203,15 +203,14 @@ module.exports = {
     view: async (req, res) => {
         try {
             const userId = req.params._id;
-            const userDoc = await user.findOne({ _id: userId, role: [ '1'] });
+            const userDoc = await user.findOne({ _id: userId });
             res.render("admin/view.ejs", {
                 session: req.session.admin,
                 view: userDoc,
-                title: title
+                title: "User Detail"
             });
         } catch (error) {
-            console.error("Error fetching user view:", error);
-            res.status(500).json({ message: "Internal server error" });
+         throw error
         }
     },
     user_delete: async (req, res) => {
